@@ -71,7 +71,7 @@ Configuration:
 
 With the required software installed and configured it's time to prepare to build the infrastructure and upload the required software.
 
-1. If you have a containerlab topology file that you'd like to upload as part of the work flow, include it in the ```cl_topology``` folder where ansible will automatically pick it up.
+1. If you have a containerlab topology file that you'd like to upload as part of the work flow, include it in the ```cl_clab``` folder where ansible will automatically pick it up.
 1. If you have docker images that need to be uploaded because the image is not publically available from docker or because you have a special usecase, include it in the ```cl_images``` folder and it will automatically upload those images.
 1. Build the infrastructure:
 
@@ -89,7 +89,7 @@ With the required software installed and configured it's time to prepare to buil
     ```shell
     # This should already be activated, but if not activate the venv again
     source venv/bin/activate
-    ansible-playbook site.yml
+    ansible-playbook cl_lab/srl2/site.yml
     ```
 
     This command will run the ansible playbook which will update the environment, install necessary packages, and upload any containerlab topology files or docker images.

@@ -20,9 +20,9 @@
 
     - name: Find file types associated with containerlab topology
       find:
-        paths: "cl_topology/"
-        patterns: "*.yaml,*.yml"
-        recurse: no
+        paths: "cl_clab/"
+        patterns: "*.yaml,*.yml,*.cfg,*.sh"
+        recurse: yes
       register: yaml_files
       delegate_to: localhost
       tags:
