@@ -9,6 +9,8 @@ images_to_upload_and_install:
 # Terraform specific variables
 containerlab_naming_convention: containerlab
 region: us-east-2
+shared_config_files: ["~/.aws/config"]
+shared_credentials_files: ["~/.aws/credentials"]
 vpc_cidr_block: 10.10.0.0/16
 subnet_cidr_block: 10.10.1.0/24
 key_pair_name: containerlab-key

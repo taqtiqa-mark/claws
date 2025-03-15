@@ -12,10 +12,10 @@ Installation:
 1. Install [OpenTofu](http://opentofu.org) (Terraform fork):
 
     ```shell
-    alias tofu='podman run --rm -it --workdir=/srv/workspace --mount type=bind,source=.,target=/srv/workspace ghcr.io/opentofu/opentofu:latest'
+    alias tofu='podman run --rm -it --workdir=/srv/workspace --mount type=bind,source=.,target=/srv/workspace -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION ghcr.io/opentofu/opentofu:latest'
     ```
 
-1. Install the [AWS CLI]():
+1. Install the [AWS CLI](https://aws.amazon.com/cli/)
 
     ```shell
     alias aws='podman run --rm -it --mount type=bind,source=$HOME/.aws,target=/root/.aws --mount type=bind,source=$(pwd),target=/aws docker.io/amazon/aws-cli:latest'
@@ -28,7 +28,7 @@ Installation:
     sudo apt-get install build-essential python3-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev python3-pip
     ```
 
-2. Create a virtual environment:
+1. Create a virtual environment:
 
     ```shell
     python3 -m venv venv
@@ -45,12 +45,16 @@ Configuration:
 1. Configure the AWS CLI
 
     ```shell
+    mkdir -p ~/.aws
     aws configure
 
     AWS Access Key ID [None]: YOUR_ACCESS_KEY_HERE
     AWS Secret Access Key [None]: YOUR_SECRET_ACCESS_KEY_HERE
     Default region name [None]: YOUR_PREFERRED_REGION
     Default output format [None]: json
+
+    # Verify AWS CLI Configuration
+    aws sts get-caller-identity
     ```
 
 1. Review the ```vars.yml``` file, this file contains the settings that will be applied to the infrastructure.  For instance if you want this deployed in us-east-2, you would set that here, if you wanted a different AMI or instance size you would set that here.  Review that file before deploying to ensure you deploy the infrastructure with the settings you prefer.
@@ -67,14 +71,16 @@ Configuration:
 
 With the required software installed and configured it's time to prepare to build the infrastructure and upload the required software.
 
-1. If you have a containerlab topology file that you'd like to upload as part of the work flow, include it in the ```cl_topology_images``` folder where ansible will automatically pick it up.
-1. If you have docker images that need to be uploaded because the image is not publically available from docker or because you have a special usecase, include it in the ```cl_topology_images``` folder and it will automatically upload those images.
+1. If you have a containerlab topology file that you'd like to upload as part of the work flow, include it in the ```cl_topology``` folder where ansible will automatically pick it up.
+1. If you have docker images that need to be uploaded because the image is not publically available from docker or because you have a special usecase, include it in the ```cl_images``` folder and it will automatically upload those images.
 1. Build the infrastructure:
 
     ```shell
-    terraform init
-    terraform plan
-    terraform apply OR terraform apply --auto-approve
+    tofu init
+    tofu plan
+    tofu apply
+    # OR
+    tofu apply --auto-approve
     ```
 
     Besides building the infrastucture Terraform/OpenTofu is also performing a few things behind the scenes.  It creates a key pair for the EC2 instance and places it in the local directory so ansible and the end user can manage the instance.  *KEEP THIS SAFE, THIS GRANTS ACCESS TO A USER WITH SUDO PRIVILAGES*. In addition, a shell file is made executable along with the public IP address of the instance so ansible knows how to log into it.  Lastly a custom user has been created so no matter which instance type you choose the username is ubiquitous across environments.

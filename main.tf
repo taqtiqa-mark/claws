@@ -22,7 +22,6 @@ module "network" {
   vpc_cidr_block = local.yaml_file.vpc_cidr_block
   subnet_cidr_block = local.yaml_file.subnet_cidr_block
   region = local.yaml_file.region
-  
 }
 
 module "compute" {
@@ -35,4 +34,3 @@ module "compute" {
   name = local.yaml_file.containerlab_naming_convention
   ec2_user_name = local.yaml_file.ec2_user_name
 }
-
