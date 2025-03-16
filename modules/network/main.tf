@@ -1,41 +1,41 @@
-resource "aws_vpc" "containerlab_vpc" {
+resource "aws_vpc" "clab_vpc" {
   cidr_block = var.vpc_cidr_block
   tags = {
-    "Name" = "containerlab vpc"
+    "Name" = "clab vpc"
   }
 }
 
-resource "aws_internet_gateway" "containerlab_igw" {
-  vpc_id = aws_vpc.containerlab_vpc.id
+resource "aws_internet_gateway" "clab_igw" {
+  vpc_id = aws_vpc.clab_vpc.id
 }
 
-resource "aws_route_table" "containerlab_routetable" {
-  vpc_id = aws_vpc.containerlab_vpc.id
+resource "aws_route_table" "clab_routetable" {
+  vpc_id = aws_vpc.clab_vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.containerlab_igw.id
+    gateway_id = aws_internet_gateway.clab_igw.id
   }
 }
 
 resource "aws_route_table_association" "rt_association" {
   subnet_id = aws_subnet.public.id
-  route_table_id = aws_route_table.containerlab_routetable.id
+  route_table_id = aws_route_table.clab_routetable.id
 }
 
 resource "aws_subnet" "public" {
-  vpc_id = aws_vpc.containerlab_vpc.id
+  vpc_id = aws_vpc.clab_vpc.id
   cidr_block = var.subnet_cidr_block
   map_public_ip_on_launch = true
 }
 resource "aws_network_acl_association" "associate_nacl_subnet" {
-  network_acl_id = aws_network_acl.containerlab_nacl.id
+  network_acl_id = aws_network_acl.clab_nacl.id
   subnet_id = aws_subnet.public.id
 }
 
-resource "aws_network_acl" "containerlab_nacl" {
-  vpc_id = aws_vpc.containerlab_vpc.id
+resource "aws_network_acl" "clab_nacl" {
+  vpc_id = aws_vpc.clab_vpc.id
   tags = {
-    "Name" = "containerlab nacl"
+    "Name" = "clab nacl"
   }
 
   egress {
@@ -56,9 +56,9 @@ resource "aws_network_acl" "containerlab_nacl" {
   }
   }
   resource "aws_security_group" "allow_ssh" {
-  name = "containerlab_allow_ssh"
+  name = "clab_allow_ssh"
   description = "Allows SSH access from instance connect"
-  vpc_id = aws_vpc.containerlab_vpc.id
+  vpc_id = aws_vpc.clab_vpc.id
   ingress {
     from_port = 22
     to_port = 22
@@ -77,7 +77,7 @@ resource "aws_network_acl" "containerlab_nacl" {
   output "subnet_id" {
     value = aws_subnet.public.id
   }
-   
+
   output "security_group_id" {
     value = aws_security_group.allow_ssh.id
   }

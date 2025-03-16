@@ -1,4 +1,4 @@
-variable "containerlab_ami" {
+variable "clab_ami" {
   type = string
 }
 

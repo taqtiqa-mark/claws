@@ -71,7 +71,7 @@ Configuration:
 
 With the required software installed and configured it's time to prepare to build the infrastructure and upload the required software.
 
-1. If you have a containerlab topology file that you'd like to upload as part of the work flow, include it in the ```cl_clab``` folder where ansible will automatically pick it up.
+1. If you have a containerlab topology file that you'd like to upload as part of the work flow, include it in the ```cl_lab``` folder where ansible will automatically pick it up.
 1. If you have docker images that need to be uploaded because the image is not publically available from docker or because you have a special usecase, include it in the ```cl_images``` folder and it will automatically upload those images.
 1. Build the infrastructure:
 
@@ -80,7 +80,9 @@ With the required software installed and configured it's time to prepare to buil
     tofu plan
     tofu apply
     # OR
-    tofu apply --auto-approve
+    tofu apply -auto-approve
+    # Cleanup
+    tofu apply -destroy -auto-approve
     ```
 
     Besides building the infrastucture Terraform/OpenTofu is also performing a few things behind the scenes.  It creates a key pair for the EC2 instance and places it in the local directory so ansible and the end user can manage the instance.  *KEEP THIS SAFE, THIS GRANTS ACCESS TO A USER WITH SUDO PRIVILAGES*. In addition, a shell file is made executable along with the public IP address of the instance so ansible knows how to log into it.  Lastly a custom user has been created so no matter which instance type you choose the username is ubiquitous across environments.
@@ -89,16 +91,16 @@ With the required software installed and configured it's time to prepare to buil
     ```shell
     # This should already be activated, but if not activate the venv again
     source venv/bin/activate
-    ansible-playbook cl_lab/srl2/site.yml
+    ansible-playbook site.yml
     ```
 
     This command will run the ansible playbook which will update the environment, install necessary packages, and upload any containerlab topology files or docker images.
 1. Log into your EC2 Instance and run your topology!
 
     ```shell
-    ssh -i containerlab-key.pem containerlabuser@WHATEVER_IP_ADDRESS_IS_ASSOCIATED_WITH_EC2
-    cd containerlab_environment/
-    sudo containerlab deploy -t YOUR_TOPOLOGY_FILE_NAME.yml
+    ssh -i clab-key.pem clabuser@WHATEVER_IP_ADDRESS_IS_ASSOCIATED_WITH_EC2
+    cd clab_environment/
+    sudo clab deploy -t YOUR_TOPOLOGY_FILE_NAME.yml
     ```
 
 ## Troubleshooting
